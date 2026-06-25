@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap');
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --enugu-black: #111111;
+  --enugu-white: #ffffff;
+  --enugu-gold: #c0a062;
+}
+
+body {
+  @apply bg-enugu-white text-enugu-black antialiased;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+#root {
+  overflow-x: clip;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+@layer components {
+  .enugu-container {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .enugu-btn-primary {
+    @apply inline-flex items-center justify-center rounded-none bg-enugu-black px-6 py-3 text-sm font-medium uppercase tracking-wider text-enugu-white transition hover:bg-enugu-gold hover:text-enugu-black;
+  }
+
+  .enugu-btn-outline {
+    @apply inline-flex items-center justify-center rounded-none border border-enugu-black px-6 py-3 text-sm font-medium uppercase tracking-wider text-enugu-black transition hover:bg-enugu-black hover:text-enugu-white;
+  }
+}

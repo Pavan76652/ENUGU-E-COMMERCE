@@ -1,0 +1,12 @@
+export { default as HomePage } from './HomePage';
+export { default as ShopPage } from './ShopPage';
+export { default as ProductDetailPage } from './ProductDetailPage';
+export { default as CollectionsPage } from './CollectionsPage';
+export { default as CollectionPage } from './CollectionPage';
+export { default as AboutPage } from './AboutPage';
+export { default as ContactPage } from './ContactPage';
+export { default as LegalPage } from './LegalPage';
+export { default as CustomDesignPage } from './CustomDesignPage';
+export { default as CartPage } from './CartPage';
+export { default as CheckoutPage } from './CheckoutPage';
+export { default as OrderConfirmationPage } from './OrderConfirmationPage';

@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.development
+.env.staging
+.env.production
+server/.env
+client/.env
+client/.env.development
+client/.env.production
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Build
+dist/
+build/
+
+# Coverage
+coverage/

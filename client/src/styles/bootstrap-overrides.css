@@ -1,0 +1,7 @@
+/* Bootstrap overrides for ENUGU brand — extend as needed */
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--enugu-gold);
+  box-shadow: 0 0 0 0.2rem rgba(192, 160, 98, 0.25);
+}
