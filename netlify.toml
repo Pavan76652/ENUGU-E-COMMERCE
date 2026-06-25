@@ -1,0 +1,23 @@
+# Netlify — ENUGU frontend (Vite + React Router SPA)
+# Repo root deploy: build from client/, publish client/dist/
+
+[build]
+  base = "client"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # Set VITE_API_BASE_URL in Netlify UI → Site configuration → Environment variables
+  # when your backend is deployed (Railway/Render). Until then the UI loads but API calls fail.
+
+# React Router: all routes serve index.html (fixes refresh / direct URL 404s)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
