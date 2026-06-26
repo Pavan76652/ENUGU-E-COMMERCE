@@ -1,0 +1,75 @@
+# Render Blueprint for the ENUGU backend API.
+# In Render: New + → Blueprint → connect this repo. Render reads this file,
+# creates the web service, and prompts for every value marked `sync: false`.
+services:
+  - type: web
+    name: enugu-api
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: API_VERSION
+        value: v1
+      - key: LOG_LEVEL
+        value: info
+      # JWT secrets — generated automatically by Render (32+ char random values).
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_ACCESS_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      - key: BCRYPT_SALT_ROUNDS
+        value: 12
+      - key: FREE_SHIPPING_THRESHOLD
+        value: 999
+      - key: CURRENCY
+        value: INR
+      # ── Secrets / per-environment values: Render will prompt for these ──
+      # MongoDB Atlas connection string (mongodb+srv://...)
+      - key: MONGODB_URI
+        sync: false
+      # Your Netlify site URL, e.g. https://enugu-shopping.netlify.app (no trailing slash)
+      - key: CLIENT_URL
+        sync: false
+      # Same Netlify URL(s); comma-separated if more than one
+      - key: CORS_ORIGINS
+        sync: false
+      # Cloudinary (product image uploads)
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: CLOUDINARY_FOLDER
+        value: enugu
+      # Admin login that is auto-created on first boot
+      - key: SUPER_ADMIN_EMAIL
+        sync: false
+      - key: SUPER_ADMIN_PASSWORD
+        sync: false
+      - key: SUPER_ADMIN_FIRST_NAME
+        value: Super
+      - key: SUPER_ADMIN_LAST_NAME
+        value: Admin
+      # Optional email (SMTP) — leave blank to disable outgoing email
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: EMAIL_FROM
+        value: ENUGU <goudarjun763@gmail.com>

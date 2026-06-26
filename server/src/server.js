@@ -3,11 +3,13 @@ import env from './config/env.js';
 import logger from './config/logger.js';
 import { connectDB, disconnectDB } from './config/db.js';
 import { bootstrapDevData } from './seeds/bootstrapDev.js';
+import { ensureSuperAdmin } from './seeds/ensureSuperAdmin.js';
 import { ensureDefaultSizeGuide } from './seeds/ensureDefaultSizeGuide.js';
 import { getCloudinaryStatus } from './config/cloudinary.js';
 const startServer = async () => {
   await connectDB();
   await bootstrapDevData();
+  await ensureSuperAdmin();
   await ensureDefaultSizeGuide();
 
   const server = app.listen(env.port, () => {

@@ -1,12 +1,72 @@
 # ENUGU Deployment Guide
 
-Deploy the ENUGU stack as:
+Deploy the ENUGU stack as **three separate pieces**:
 
 | Layer | Platform | Notes |
 |-------|----------|--------|
-| Frontend | **Vercel** | React/Vite SPA |
-| Backend | **Railway** or **Render** | Node/Express API |
+| Frontend | **Netlify** (or Vercel) | React/Vite SPA |
+| Backend | **Render** (or Railway) | Node/Express API |
 | Database | **MongoDB Atlas** | Managed MongoDB |
+
+> **Why your products only show locally:** the frontend on Netlify is only the
+> website. The backend + database (where products live) must also be hosted
+> online. Until they are, the live site has no server to talk to. Follow the
+> Quick Start below to host all three pieces so changes appear everywhere.
+
+---
+
+## Quick Start — Netlify + Render + Atlas (recommended)
+
+This is the fastest path to make admin changes show up on the live site from any device.
+
+### Step 1 — MongoDB Atlas (your database)
+
+1. Sign up at [mongodb.com/atlas](https://www.mongodb.com/atlas) → create a **free M0 cluster**.
+2. **Database Access** → add a database user (username + password). Save these.
+3. **Network Access** → Add IP Address → **Allow access from anywhere** (`0.0.0.0/0`).
+4. **Database** → **Connect** → **Drivers** → copy the connection string and insert your
+   password and `enugu` as the database name:
+   ```
+   mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/enugu?retryWrites=true&w=majority
+   ```
+
+### Step 2 — Backend on Render (your API)
+
+1. Sign up at [render.com](https://render.com) with your GitHub account.
+2. **New + → Blueprint** → pick the `ENUGU-E-COMMERCE` repo. Render reads the root
+   `render.yaml` and creates the `enugu-api` service automatically.
+3. When prompted, fill in the values (JWT secrets are generated for you):
+   | Variable | Value |
+   |----------|-------|
+   | `MONGODB_URI` | the Atlas string from Step 1 |
+   | `CLIENT_URL` | your Netlify URL, e.g. `https://enugu-shopping.netlify.app` |
+   | `CORS_ORIGINS` | the same Netlify URL |
+   | `CLOUDINARY_CLOUD_NAME` / `_API_KEY` / `_API_SECRET` | from your Cloudinary dashboard |
+   | `SUPER_ADMIN_EMAIL` | the admin email you want |
+   | `SUPER_ADMIN_PASSWORD` | a strong admin password |
+4. Deploy. Copy the public URL, e.g. `https://enugu-api.onrender.com`.
+5. Verify it works: open `https://enugu-api.onrender.com/api/v1/health` → should return JSON.
+
+> The super admin account is created automatically on first boot, so you can log
+> in at `/admin/login` right away — no manual seed step needed.
+
+### Step 3 — Point Netlify at the backend
+
+1. Netlify → your site → **Site configuration → Environment variables** → add:
+   | Variable | Value |
+   |----------|-------|
+   | `VITE_API_BASE_URL` | `https://enugu-api.onrender.com/api/v1` |
+   | `VITE_SITE_URL` | your Netlify URL |
+2. **Trigger a redeploy** (Deploys → Trigger deploy → Clear cache and deploy).
+   Vite bakes env vars in at build time, so a rebuild is required.
+
+### Step 4 — Confirm
+
+- Open the live Netlify site, go to `/admin/login`, log in with the super admin.
+- Add a product → it now saves to Atlas via Render and appears for **everyone, on every device**.
+
+> **Note on Render free tier:** the API "sleeps" after ~15 min idle, so the first
+> request after a pause can take ~30–50s. Upgrade the plan to remove cold starts.
 
 ---
 
@@ -79,14 +139,17 @@ Generate secrets (PowerShell):
 5. Or use `server/render.yaml` as blueprint.
 6. Health check path: `/api/v1/health`
 
-### Seed super admin (once)
+### Seed super admin
+
+The super admin is **created automatically on server boot** from `SUPER_ADMIN_EMAIL`
+and `SUPER_ADMIN_PASSWORD`, in every environment — no manual step required.
+
+To (re)create it manually against a production database, you can still run:
 
 ```bash
 cd server
 npm run seed:super-admin
 ```
-
-Run locally with production `MONGODB_URI`, or use Railway/Render shell.
 
 ### Verify API
 
