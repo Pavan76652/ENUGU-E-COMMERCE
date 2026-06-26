@@ -56,8 +56,9 @@ const Navbar = () => {
     ) : null;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-black/5 bg-enugu-white/90 backdrop-blur-md">
-      <div className="enugu-container">
+    <>
+      <header className="sticky top-0 z-50 border-b border-black/5 bg-enugu-white/90 backdrop-blur-md">
+        <div className="enugu-container">
         <div className="flex h-[5rem] items-center justify-between gap-3 sm:h-[5.25rem] sm:gap-5">
           <button
             type="button"
@@ -125,9 +126,10 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+      </header>
 
       <div
-        className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-[60] bg-black/60 transition-opacity duration-300 md:hidden ${
           isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
         onClick={closeMenu}
@@ -138,7 +140,8 @@ const Navbar = () => {
         role="dialog"
         aria-modal="true"
         aria-label="Main menu"
-        className={`fixed inset-y-0 left-0 z-50 flex w-[86vw] max-w-sm flex-col border-r border-black/5 bg-white shadow-2xl transition-transform duration-300 md:hidden ${
+        style={{ backgroundColor: '#ffffff' }}
+        className={`fixed inset-y-0 left-0 z-[70] flex w-[86vw] max-w-sm flex-col border-r border-black/5 bg-white shadow-2xl transition-transform duration-300 md:hidden ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -182,7 +185,7 @@ const Navbar = () => {
           </NavLink>
         </nav>
       </aside>
-    </header>
+    </>
   );
 };
 
