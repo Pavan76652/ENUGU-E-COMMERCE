@@ -82,8 +82,8 @@ const Navbar = () => {
 
           <BrandLogo
             to={ROUTES.HOME}
-            height={56}
-            className="absolute left-1/2 -translate-x-1/2 md:static md:left-auto md:translate-x-0"
+            height={52}
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:static md:left-auto md:translate-x-0 md:translate-y-0"
             imgClassName="h-[52px] w-auto sm:h-[56px] md:h-[62px] lg:h-[66px] drop-shadow-[0_1px_1px_rgba(0,0,0,0.08)]"
           />
           <nav className="hidden items-center gap-10 md:flex">
