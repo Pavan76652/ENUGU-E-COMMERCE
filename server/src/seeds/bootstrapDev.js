@@ -4,16 +4,12 @@ import Category from '../models/Category.js';
 import Product from '../models/Product.js';
 import Order from '../models/Order.js';
 import ActivityLog from '../models/ActivityLog.js';
+import { DEFAULT_CATEGORIES } from './ensureDefaultCategories.js';
 import { ROLES } from '../constants/roles.js';
 import { ORDER_STATUS, PAYMENT_STATUS } from '../constants/orderStatus.js';
 import { AUDIT_ACTIONS, AUDIT_RESOURCES } from '../constants/auditActions.js';
 import { PERMISSIONS } from '../constants/permissions.js';
 import env from '../config/env.js';
-const DEFAULT_CATEGORIES = [
-  { name: 'Graphic Tees', slug: 'graphic-tees', sortOrder: 1 },
-  { name: 'Oversized Tees', slug: 'oversized-tees', sortOrder: 2 },
-  { name: 'Custom Prints', slug: 'custom-prints', sortOrder: 3 },
-];
 
 const DEV_CUSTOMER = {
   email: 'customer@enugu.com',

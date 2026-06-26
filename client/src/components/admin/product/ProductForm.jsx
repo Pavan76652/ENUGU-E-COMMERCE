@@ -199,7 +199,9 @@ const ProductForm = ({
             </select>
             {errors.categoryId && <p className="mt-1 text-xs text-red-600">{errors.categoryId}</p>}
             {!categories.length && (
-              <p className="mt-1 text-xs text-amber-600">No categories found. Restart server to seed defaults.</p>
+              <p className="mt-1 text-xs text-amber-600">
+                No categories yet. Default categories are created automatically when the server starts.
+              </p>
             )}
           </div>
 
