@@ -29,18 +29,27 @@ export const ensureSuperAdmin = async () => {
     return existing;
   }
 
-  const superAdmin = await User.create({
-    firstName: env.superAdmin.firstName,
-    lastName: env.superAdmin.lastName,
-    email,
-    password,
-    role: ROLES.SUPER_ADMIN,
-    isEmailVerified: true,
-    isActive: true,
-  });
+  try {
+    const superAdmin = await User.create({
+      firstName: env.superAdmin.firstName,
+      lastName: env.superAdmin.lastName,
+      email,
+      password,
+      role: ROLES.SUPER_ADMIN,
+      isEmailVerified: true,
+      isActive: true,
+    });
 
-  logger.info(`Super admin created: ${email}`);
-  return superAdmin;
+    logger.info(`Super admin created: ${email}`);
+    return superAdmin;
+  } catch (error) {
+    // Another process may have created the account first (e.g. nodemon double-start).
+    if (error?.code === 11_000) {
+      const raced = await User.findByEmail(email);
+      if (raced) return raced;
+    }
+    throw error;
+  }
 };
 
 export default { ensureSuperAdmin };
