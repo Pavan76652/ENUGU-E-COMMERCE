@@ -3,14 +3,25 @@ import * as campaignController from '../../../controllers/admin/campaign.control
 import { validate } from '../../../middleware/validate.middleware.js';
 import { authorizePermission } from '../../../middleware/role.middleware.js';
 import { PERMISSIONS } from '../../../constants/permissions.js';
+import { productImageUpload, handleMulterError } from '../../../middleware/upload.middleware.js';
 import { createCampaignSchema, updateCampaignSchema } from '../../../validators/admin.validator.js';
 
 const router = Router();
+const canManage = authorizePermission(PERMISSIONS.CAMPAIGNS_MANAGE);
+const singleImageUpload = productImageUpload.single('image');
 
-router.get('/', authorizePermission(PERMISSIONS.CAMPAIGNS_MANAGE), campaignController.listCampaigns);
-router.get('/:id', authorizePermission(PERMISSIONS.CAMPAIGNS_MANAGE), campaignController.getCampaign);
-router.post('/', authorizePermission(PERMISSIONS.CAMPAIGNS_MANAGE), validate(createCampaignSchema), campaignController.createCampaign);
-router.put('/:id', authorizePermission(PERMISSIONS.CAMPAIGNS_MANAGE), validate(updateCampaignSchema), campaignController.updateCampaign);
-router.delete('/:id', authorizePermission(PERMISSIONS.CAMPAIGNS_MANAGE), campaignController.deleteCampaign);
+router.get('/', canManage, campaignController.listCampaigns);
+router.get('/:id', canManage, campaignController.getCampaign);
+router.post('/', canManage, validate(createCampaignSchema), campaignController.createCampaign);
+router.put('/:id', canManage, validate(updateCampaignSchema), campaignController.updateCampaign);
+router.post(
+  '/:id/banner',
+  canManage,
+  singleImageUpload,
+  handleMulterError,
+  campaignController.uploadCampaignBanner
+);
+router.delete('/:id/banner', canManage, campaignController.deleteCampaignBanner);
+router.delete('/:id', canManage, campaignController.deleteCampaign);
 
 export default router;

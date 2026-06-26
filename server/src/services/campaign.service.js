@@ -5,6 +5,12 @@ import { slugify, uniqueSlug } from '../utils/slugify.js';
 import { getPagination, buildPaginationMeta, parseSort } from '../utils/pagination.js';
 import { AUDIT_ACTIONS, AUDIT_RESOURCES } from '../constants/auditActions.js';
 import { logActivity } from './activityLog.service.js';
+import * as cloudinaryService from './cloudinary.service.js';
+
+const BANNER_FIELD_BY_VARIANT = {
+  desktop: 'bannerImage',
+  mobile: 'mobileBannerImage',
+};
 
 const resolveCouponLink = async (couponCode) => {
   if (!couponCode?.trim()) return [];
@@ -139,6 +145,75 @@ export const updateCampaign = async (id, data, actor, req) => {
   return withLiveStatus(campaign);
 };
 
+export const uploadCampaignBanner = async (id, file, variant, actor, req) => {
+  const field = BANNER_FIELD_BY_VARIANT[variant];
+  if (!field) {
+    throw new ApiError(400, "Banner variant must be 'desktop' or 'mobile'");
+  }
+
+  const campaign = await FestivalCampaign.findById(id);
+  if (!campaign) {
+    throw new ApiError(404, 'Campaign not found');
+  }
+
+  const uploaded = await cloudinaryService.uploadCampaignBanner(file.buffer, {
+    campaignId: campaign._id.toString(),
+    variant,
+  });
+
+  if (campaign[field]?.publicId) {
+    await cloudinaryService.deleteImage(campaign[field].publicId).catch(() => null);
+  }
+
+  campaign[field] = { url: uploaded.url, publicId: uploaded.publicId };
+  await campaign.save();
+
+  await logActivity({
+    actor,
+    action: AUDIT_ACTIONS.CAMPAIGN_UPDATED,
+    resource: AUDIT_RESOURCES.CAMPAIGN,
+    resourceId: campaign._id,
+    metadata: { name: campaign.name, bannerVariant: variant },
+    req,
+  });
+
+  return withLiveStatus(campaign);
+};
+
+export const deleteCampaignBanner = async (id, variant, actor, req) => {
+  const field = BANNER_FIELD_BY_VARIANT[variant];
+  if (!field) {
+    throw new ApiError(400, "Banner variant must be 'desktop' or 'mobile'");
+  }
+
+  const campaign = await FestivalCampaign.findById(id);
+  if (!campaign) {
+    throw new ApiError(404, 'Campaign not found');
+  }
+
+  if (!campaign[field]?.url) {
+    throw new ApiError(400, 'No banner image to delete');
+  }
+
+  if (campaign[field]?.publicId) {
+    await cloudinaryService.deleteImage(campaign[field].publicId).catch(() => null);
+  }
+
+  campaign[field] = undefined;
+  await campaign.save();
+
+  await logActivity({
+    actor,
+    action: AUDIT_ACTIONS.CAMPAIGN_UPDATED,
+    resource: AUDIT_RESOURCES.CAMPAIGN,
+    resourceId: campaign._id,
+    metadata: { name: campaign.name, bannerVariant: variant, removed: true },
+    req,
+  });
+
+  return withLiveStatus(campaign);
+};
+
 export const deleteCampaign = async (id, actor, req) => {
   const campaign = await FestivalCampaign.findById(id);
 
@@ -161,4 +236,12 @@ export const deleteCampaign = async (id, actor, req) => {
   return withLiveStatus(campaign);
 };
 
-export default { listCampaigns, getCampaignById, createCampaign, updateCampaign, deleteCampaign };
+export default {
+  listCampaigns,
+  getCampaignById,
+  createCampaign,
+  updateCampaign,
+  uploadCampaignBanner,
+  deleteCampaignBanner,
+  deleteCampaign,
+};

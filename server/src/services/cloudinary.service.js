@@ -99,6 +99,36 @@ export const uploadSizeGuideImage = async (fileBuffer, { sizeGuideId = null } = 
   });
 };
 
+export const uploadCampaignBanner = async (fileBuffer, { campaignId = null, variant = 'desktop' } = {}) => {
+  assertCloudinaryConfigured();
+
+  const base = env.cloudinary.folder || 'enugu';
+  const folder = campaignId ? `${base}/campaigns/${campaignId}` : `${base}/campaigns/temp`;
+
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+        resource_type: 'image',
+        tags: ['enugu', 'campaign', variant],
+        // Preserve banner detail (baked-in text/logos) while still optimizing delivery.
+        transformation: [{ quality: 'auto:best', fetch_format: 'auto' }],
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve({
+          url: result.secure_url,
+          publicId: result.public_id,
+          width: result.width,
+          height: result.height,
+        });
+      }
+    );
+
+    stream.end(fileBuffer);
+  });
+};
+
 export const getOptimizedImageUrl = (url, { width = 1200 } = {}) => {
   if (!url) return '';
   if (!url.includes('res.cloudinary.com') || !url.includes('/upload/')) {
@@ -126,6 +156,7 @@ export default {
   uploadImage,
   uploadDesignReference,
   uploadMultipleImages,
+  uploadCampaignBanner,
   deleteImage,
   deleteMultipleImages,
   assertCloudinaryConfigured,

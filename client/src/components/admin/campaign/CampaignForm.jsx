@@ -4,13 +4,13 @@ import {
   FESTIVAL_TYPE_OPTIONS,
   FESTIVAL_PRESETS,
 } from '../../../constants/campaignPresets';
+import CampaignBannerUpload from './CampaignBannerUpload';
 
 const toFormValues = (campaign) => ({
   festivalType: campaign?.festivalType ?? FESTIVAL_TYPES.DIWALI,
   name: campaign?.name ?? '',
   greetingMessage: campaign?.greetingMessage ?? '',
   couponCode: campaign?.couponCode ?? '',
-  bannerUrl: campaign?.bannerImage?.url ?? campaign?.bannerImage ?? '',
   startDate: campaign?.startDate
     ? new Date(campaign.startDate).toISOString().slice(0, 10)
     : new Date().toISOString().slice(0, 10),
@@ -26,10 +26,27 @@ const toFormValues = (campaign) => ({
 const CampaignForm = ({ initialData, onSubmit, onCancel, isEditing = false, loading = false }) => {
   const [form, setForm] = useState(toFormValues(initialData));
   const [errors, setErrors] = useState({});
+  const [banners, setBanners] = useState({
+    bannerImage: initialData?.bannerImage ?? null,
+    mobileBannerImage: initialData?.mobileBannerImage ?? null,
+  });
+
+  const campaignId = initialData?._id ?? initialData?.id ?? null;
 
   useEffect(() => {
     setForm(toFormValues(initialData));
+    setBanners({
+      bannerImage: initialData?.bannerImage ?? null,
+      mobileBannerImage: initialData?.mobileBannerImage ?? null,
+    });
   }, [initialData]);
+
+  const handleBannerChange = (updatedCampaign) => {
+    setBanners({
+      bannerImage: updatedCampaign?.bannerImage ?? null,
+      mobileBannerImage: updatedCampaign?.mobileBannerImage ?? null,
+    });
+  };
 
   const update = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -49,7 +66,6 @@ const CampaignForm = ({ initialData, onSubmit, onCancel, isEditing = false, load
       name: preset.name,
       greetingMessage: preset.greetingMessage,
       couponCode: preset.couponCode,
-      bannerUrl: preset.bannerImage ?? prev.bannerUrl,
     }));
   };
 
@@ -80,11 +96,6 @@ const CampaignForm = ({ initialData, onSubmit, onCancel, isEditing = false, load
       isActive: form.isActive,
       isFeatured: form.isFeatured,
     };
-
-    if (form.bannerUrl?.trim()) {
-      payload.bannerImage = { url: form.bannerUrl.trim() };
-      payload.mobileBannerImage = { url: form.bannerUrl.trim() };
-    }
 
     onSubmit(payload);
   };
@@ -140,22 +151,38 @@ const CampaignForm = ({ initialData, onSubmit, onCancel, isEditing = false, load
       </div>
 
       <div>
-        <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-gray-500">
-          Banner Image URL
+        <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-gray-500">
+          Campaign Banners
         </label>
-        <input
-          type="url"
-          value={form.bannerUrl}
-          onChange={(e) => update('bannerUrl', e.target.value)}
-          placeholder="https://..."
-          className={inputClass('bannerUrl')}
-        />
-        {form.bannerUrl && (
-          <img
-            src={form.bannerUrl}
-            alt="Banner preview"
-            className="mt-2 h-24 w-full max-w-sm rounded object-cover"
-          />
+        {campaignId ? (
+          <div className="space-y-3">
+            <CampaignBannerUpload
+              campaignId={campaignId}
+              variant="desktop"
+              label="Desktop Banner"
+              ratioHint="Recommended 16:9 · 1920×1080px · JPG/PNG/WebP, max 5MB"
+              image={banners.bannerImage}
+              onChange={handleBannerChange}
+              disabled={loading}
+            />
+            <CampaignBannerUpload
+              campaignId={campaignId}
+              variant="mobile"
+              label="Mobile Banner"
+              ratioHint="Recommended 4:5 · 1080×1350px · JPG/PNG/WebP, max 5MB"
+              image={banners.mobileBannerImage}
+              onChange={handleBannerChange}
+              disabled={loading}
+            />
+            <p className="text-xs text-gray-400">
+              Design your banner with text/logo included. Keep key content centered. The desktop
+              banner shows on computers; the mobile banner shows on phones.
+            </p>
+          </div>
+        ) : (
+          <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 px-4 py-5 text-sm text-gray-500">
+            Save the campaign first, then upload the desktop and mobile banners here.
+          </div>
         )}
       </div>
 

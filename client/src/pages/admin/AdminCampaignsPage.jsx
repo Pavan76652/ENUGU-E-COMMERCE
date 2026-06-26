@@ -36,8 +36,14 @@ const AdminCampaignsPage = () => {
     setSaving(true);
     setError('');
     try {
-      await campaignApi.admin.create(payload);
+      const result = await campaignApi.admin.create(payload);
+      const created = result?.campaign ?? result;
       setShowForm(false);
+      // Switch into edit mode for the new campaign so banners (which need an ID)
+      // can be uploaded right away.
+      if (created?._id || created?.id) {
+        setEditingCampaign(created);
+      }
       fetchCampaigns();
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create campaign');

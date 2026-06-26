@@ -24,6 +24,41 @@ const HeroBanner = () => {
     setImageFailed(false);
   }, [hero.image]);
 
+  // Full-design campaign banner: show the uploaded artwork edge-to-edge with no
+  // overlay text (the banner already includes its own text/logo). Separate
+  // desktop and mobile images keep both fitting perfectly.
+  const showCampaignBanner = isActive && Boolean(campaign?.bannerImage) && !imageFailed;
+
+  if (showCampaignBanner) {
+    const desktopUrl = campaign.bannerImage;
+    const mobileUrl = campaign.mobileBannerImage || campaign.bannerImage;
+    const saleLink = campaign.couponCode
+      ? `${ROUTES.CART}?coupon=${campaign.couponCode}`
+      : ROUTES.SHOP;
+
+    return (
+      <section className="bg-enugu-black">
+        <Link
+          to={saleLink}
+          className="block w-full"
+          aria-label={`${campaign.name} — shop the sale`}
+        >
+          <picture>
+            <source media="(max-width: 767px)" srcSet={mobileUrl} />
+            <img
+              src={desktopUrl}
+              alt={campaign.name}
+              className="h-auto w-full"
+              fetchPriority="high"
+              decoding="async"
+              onError={() => setImageFailed(true)}
+            />
+          </picture>
+        </Link>
+      </section>
+    );
+  }
+
   return (
     <section className="relative min-h-[72vh] overflow-hidden bg-enugu-black text-enugu-white sm:min-h-[82vh] lg:min-h-[90vh]">
       <div className="absolute inset-0">
