@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { adminApi } from '../../services/adminApi';
 import { formatCurrency } from '../../utils/helpers';
 import { ROUTES } from '../../config/routes';
+import { AdminActiveCampaignBanner } from '../../components/admin/campaign';
 
 const StatCard = ({ label, value, subtext }) => (
   <div className="rounded-lg border border-gray-200 bg-white p-5">
@@ -68,7 +69,11 @@ const AdminDashboardPage = () => {
             <StatCard label="Free Shipping" value={`₹${overview.freeShippingThreshold ?? 999}+`} />
           </div>
 
-          <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <div className="mt-8">
+            <AdminActiveCampaignBanner />
+          </div>
+
+          <div className="mt-6 grid gap-6 lg:grid-cols-2">
             <section className="rounded-lg border border-gray-200 bg-white p-5">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-enugu-black">Quick Links</h2>
               <div className="mt-4 grid gap-2 sm:grid-cols-2">
