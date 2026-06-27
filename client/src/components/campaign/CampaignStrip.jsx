@@ -19,23 +19,32 @@ const CampaignStrip = ({ className = '' }) => {
     ? `${ROUTES.CART}?coupon=${campaign.couponCode}`
     : ROUTES.SHOP;
 
-  // A dedicated shop banner is already sized for the strip, so show it fully
-  // (contain). A fallback hero banner is taller, so crop it (cover).
-  const fitClass = shopUrl ? 'object-contain' : 'object-cover';
-
   return (
     <Link
       to={saleLink}
       aria-label={`${campaign.name} — shop the sale`}
       className={`group relative block overflow-hidden rounded-lg bg-enugu-black ${className}`}
     >
-      <img
-        src={imageUrl}
-        alt={campaign.name}
-        loading="lazy"
-        decoding="async"
-        className={`h-24 w-full ${fitClass} transition-transform duration-500 group-hover:scale-105 sm:h-32 md:h-40`}
-      />
+      {shopUrl ? (
+        // Dedicated shop banner: show the full artwork edge-to-edge (no cropping,
+        // no letterbox) by letting it size to its natural aspect ratio.
+        <img
+          src={shopUrl}
+          alt={campaign.name}
+          loading="lazy"
+          decoding="async"
+          className="block h-auto w-full"
+        />
+      ) : (
+        // Fallback hero banner is tall, so crop it into a short strip.
+        <img
+          src={imageUrl}
+          alt={campaign.name}
+          loading="lazy"
+          decoding="async"
+          className="h-24 w-full object-cover transition-transform duration-500 group-hover:scale-105 sm:h-32 md:h-40"
+        />
+      )}
 
       {campaign.couponCode && (
         <span className="absolute right-3 top-3 rounded-full bg-enugu-gold px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-enugu-black">
