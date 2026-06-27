@@ -5,6 +5,7 @@ import ShopSearch from '../../components/shop/ShopSearch';
 import ShopFilters from '../../components/shop/ShopFilters';
 import ShopSort from '../../components/shop/ShopSort';
 import ShopProductCard from '../../components/shop/ShopProductCard';
+import CampaignStrip from '../../components/campaign/CampaignStrip';
 import { Seo } from '../../components/seo';
 import { PAGE_SEO } from '../../utils/seo';
 import { useDebounce } from '../../hooks/useDebounce';
@@ -84,6 +85,7 @@ const ShopPage = () => {
       <Seo {...PAGE_SEO.shop} />
     <div className="py-8 sm:py-12">
       <div className="enugu-container">
+        <CampaignStrip className="mb-6 sm:mb-8" />
         <div className="mb-8 sm:mb-12">
           <p className="text-xs uppercase tracking-[0.3em] text-enugu-gold">Shop</p>
           <h1 className="mt-2 font-display text-3xl font-bold uppercase tracking-wide text-enugu-black sm:text-4xl">
