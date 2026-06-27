@@ -100,6 +100,7 @@ const campaignFieldsSchema = z.object({
   description: z.string().optional().default(''),
   bannerImage: z.object({ url: z.string().url(), publicId: z.string().optional() }).optional(),
   mobileBannerImage: z.object({ url: z.string().url(), publicId: z.string().optional() }).optional(),
+  shopBannerImage: z.object({ url: z.string().url(), publicId: z.string().optional() }).optional(),
   discountType: z.enum(['percentage', 'fixed']).optional().default('percentage'),
   discountValue: z.number().min(0).optional().default(0),
   startDate: z.coerce.date(),

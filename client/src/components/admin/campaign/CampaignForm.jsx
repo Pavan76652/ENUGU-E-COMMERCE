@@ -29,6 +29,7 @@ const CampaignForm = ({ initialData, onSubmit, onCancel, isEditing = false, load
   const [banners, setBanners] = useState({
     bannerImage: initialData?.bannerImage ?? null,
     mobileBannerImage: initialData?.mobileBannerImage ?? null,
+    shopBannerImage: initialData?.shopBannerImage ?? null,
   });
 
   const campaignId = initialData?._id ?? initialData?.id ?? null;
@@ -38,6 +39,7 @@ const CampaignForm = ({ initialData, onSubmit, onCancel, isEditing = false, load
     setBanners({
       bannerImage: initialData?.bannerImage ?? null,
       mobileBannerImage: initialData?.mobileBannerImage ?? null,
+      shopBannerImage: initialData?.shopBannerImage ?? null,
     });
   }, [initialData]);
 
@@ -45,6 +47,7 @@ const CampaignForm = ({ initialData, onSubmit, onCancel, isEditing = false, load
     setBanners({
       bannerImage: updatedCampaign?.bannerImage ?? null,
       mobileBannerImage: updatedCampaign?.mobileBannerImage ?? null,
+      shopBannerImage: updatedCampaign?.shopBannerImage ?? null,
     });
   };
 
@@ -174,9 +177,19 @@ const CampaignForm = ({ initialData, onSubmit, onCancel, isEditing = false, load
               onChange={handleBannerChange}
               disabled={loading}
             />
+            <CampaignBannerUpload
+              campaignId={campaignId}
+              variant="shop"
+              label="Shop Page Banner (wide strip)"
+              ratioHint="Recommended 4:1 · 1600×400px · short wide strip shown on the Shop page"
+              image={banners.shopBannerImage}
+              onChange={handleBannerChange}
+              disabled={loading}
+            />
             <p className="text-xs text-gray-400">
-              Design your banner with text/logo included. Keep key content centered. The desktop
-              banner shows on computers; the mobile banner shows on phones.
+              Design banners with text/logo included and keep key content centered. Desktop banner =
+              homepage on computers, Mobile banner = homepage on phones, Shop banner = the short wide
+              strip on the Shop page.
             </p>
           </div>
         ) : (

@@ -19,6 +19,7 @@ const formatCampaignForStorefront = (campaign) => {
     couponCode: campaign.couponCode,
     bannerImage: bannerUrl,
     mobileBannerImage: campaign.mobileBannerImage?.url ?? bannerUrl,
+    shopBannerImage: campaign.shopBannerImage?.url ?? null,
     startDate: campaign.startDate,
     endDate: campaign.endDate,
     isFeatured: campaign.isFeatured,

@@ -10,6 +10,7 @@ import * as cloudinaryService from './cloudinary.service.js';
 const BANNER_FIELD_BY_VARIANT = {
   desktop: 'bannerImage',
   mobile: 'mobileBannerImage',
+  shop: 'shopBannerImage',
 };
 
 const resolveCouponLink = async (couponCode) => {
@@ -114,7 +115,7 @@ export const updateCampaign = async (id, data, actor, req) => {
 
   const fields = [
     'festivalType', 'greetingMessage', 'description', 'bannerImage', 'mobileBannerImage',
-    'discountType', 'discountValue', 'startDate', 'endDate', 'linkedProducts',
+    'shopBannerImage', 'discountType', 'discountValue', 'startDate', 'endDate', 'linkedProducts',
     'linkedCoupons', 'isActive', 'isFeatured',
   ];
 

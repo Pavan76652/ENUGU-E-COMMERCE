@@ -21,6 +21,7 @@ const festivalCampaignSchema = new mongoose.Schema(
     description: { type: String, default: '' },
     bannerImage: imageSchema,
     mobileBannerImage: imageSchema,
+    shopBannerImage: imageSchema,
     discountType: { type: String, enum: ['percentage', 'fixed'], default: 'percentage' },
     discountValue: { type: Number, default: 0, min: 0 },
     startDate: { type: Date, required: true, index: true },

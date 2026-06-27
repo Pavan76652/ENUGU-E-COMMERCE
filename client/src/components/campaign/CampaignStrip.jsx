@@ -8,13 +8,20 @@ import { ROUTES } from '../../config/routes';
 const CampaignStrip = ({ className = '' }) => {
   const { campaign, isActive } = useCampaign();
 
-  if (!isActive || !campaign?.bannerImage) return null;
+  // Prefer the dedicated wide Shop banner; fall back to the hero banners.
+  const shopUrl = campaign?.shopBannerImage;
+  const fallbackUrl = campaign?.bannerImage || campaign?.mobileBannerImage;
+  const imageUrl = shopUrl || fallbackUrl;
 
-  const desktopUrl = campaign.bannerImage;
-  const mobileUrl = campaign.mobileBannerImage || campaign.bannerImage;
+  if (!isActive || !imageUrl) return null;
+
   const saleLink = campaign.couponCode
     ? `${ROUTES.CART}?coupon=${campaign.couponCode}`
     : ROUTES.SHOP;
+
+  // A dedicated shop banner is already sized for the strip, so show it fully
+  // (contain). A fallback hero banner is taller, so crop it (cover).
+  const fitClass = shopUrl ? 'object-contain' : 'object-cover';
 
   return (
     <Link
@@ -22,16 +29,13 @@ const CampaignStrip = ({ className = '' }) => {
       aria-label={`${campaign.name} — shop the sale`}
       className={`group relative block overflow-hidden rounded-lg bg-enugu-black ${className}`}
     >
-      <picture>
-        <source media="(max-width: 639px)" srcSet={mobileUrl} />
-        <img
-          src={desktopUrl}
-          alt={campaign.name}
-          loading="lazy"
-          decoding="async"
-          className="h-28 w-full object-cover transition-transform duration-500 group-hover:scale-105 sm:h-36 md:h-44"
-        />
-      </picture>
+      <img
+        src={imageUrl}
+        alt={campaign.name}
+        loading="lazy"
+        decoding="async"
+        className={`h-24 w-full ${fitClass} transition-transform duration-500 group-hover:scale-105 sm:h-32 md:h-40`}
+      />
 
       {campaign.couponCode && (
         <span className="absolute right-3 top-3 rounded-full bg-enugu-gold px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-enugu-black">
