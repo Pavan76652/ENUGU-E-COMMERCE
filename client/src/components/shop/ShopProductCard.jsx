@@ -39,9 +39,9 @@ const ShopProductCard = ({ product }) => {
   };
 
   return (
-    <div className="group relative">
-      <Link to={`/product/${product.slug}`} className="block">
-        <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
+    <div className="group relative flex h-full flex-col">
+      <Link to={`/product/${product.slug}`} className="flex flex-1 flex-col">
+        <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
           <img
             src={product.image}
             alt={product.name}
@@ -75,8 +75,8 @@ const ShopProductCard = ({ product }) => {
           </div>
         </div>
 
-        <div className="mt-4">
-          <h3 className="text-sm font-medium uppercase tracking-wide text-enugu-black transition group-hover:text-enugu-gold">
+        <div className="mt-4 flex flex-1 flex-col">
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-medium uppercase tracking-wide text-enugu-black transition group-hover:text-enugu-gold">
             {product.name}
           </h3>
           <div className="mt-1.5 flex flex-wrap items-center gap-2">
@@ -101,26 +101,28 @@ const ShopProductCard = ({ product }) => {
         </svg>
       </button>
 
-      {!soldOut && (
-        <div className="mt-3">
-          {isInCart ? (
-            <Link
-              to={ROUTES.CART}
-              className="block border border-enugu-black px-3 py-2 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-enugu-black transition hover:bg-enugu-black hover:text-white"
-            >
-              Go To Cart
-            </Link>
-          ) : (
-            <button
-              type="button"
-              onClick={handleAddToCart}
-              className="w-full bg-enugu-black px-3 py-2 text-[11px] font-medium uppercase tracking-[0.2em] text-white transition hover:bg-enugu-gold hover:text-enugu-black"
-            >
-              Add To Cart
-            </button>
-          )}
-        </div>
-      )}
+      <div className="mt-3">
+        {soldOut ? (
+          <span className="block w-full cursor-not-allowed border border-gray-300 px-3 py-2 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-gray-400">
+            Sold Out
+          </span>
+        ) : isInCart ? (
+          <Link
+            to={ROUTES.CART}
+            className="block w-full border border-enugu-black px-3 py-2 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-enugu-black transition hover:bg-enugu-black hover:text-white"
+          >
+            Go To Cart
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className="w-full bg-enugu-black px-3 py-2 text-[11px] font-medium uppercase tracking-[0.2em] text-white transition hover:bg-enugu-gold hover:text-enugu-black"
+          >
+            Add To Cart
+          </button>
+        )}
+      </div>
     </div>
   );
 };
