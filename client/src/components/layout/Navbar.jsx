@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../config/routes';
 import BrandLogo from '../common/BrandLogo';
 import { useCart, useAuth, useWishlist } from '../../hooks';
@@ -14,11 +14,12 @@ const NAV_LINKS = [
 ];
 
 // Mobile drawer — grouped like Zara / H&M / Nike
+// matchSort: only this shop sort param is active (null = plain /shop with no sort)
 const MENU_BROWSE = [
-  { to: ROUTES.SHOP, label: 'Shop' },
+  { to: ROUTES.SHOP, label: 'Shop', matchSort: null },
   { to: ROUTES.COLLECTIONS, label: 'Collections' },
-  { to: `${ROUTES.SHOP}?sort=newest`, label: 'New Arrivals' },
-  { to: `${ROUTES.SHOP}?sort=best-selling`, label: 'Best Sellers' },
+  { to: `${ROUTES.SHOP}?sort=newest`, label: 'New Arrivals', matchSort: 'newest' },
+  { to: `${ROUTES.SHOP}?sort=best-selling`, label: 'Best Sellers', matchSort: 'best-selling' },
 ];
 
 const MENU_INFO = [
@@ -38,6 +39,14 @@ const mobileLinkClass = ({ isActive }) =>
       : 'text-enugu-black hover:bg-enugu-black/5 active:bg-enugu-black/10'
   }`;
 
+const isShopBrowseLinkActive = (link, location) => {
+  if (link.matchSort === undefined) return undefined;
+  if (location.pathname !== ROUTES.SHOP) return false;
+  const sort = new URLSearchParams(location.search).get('sort');
+  if (link.matchSort === null) return !sort;
+  return sort === link.matchSort;
+};
+
 const sectionLabelClass =
   'px-4 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-400';
 
@@ -55,6 +64,7 @@ const AccountIcon = ({ className = 'h-6 w-6' }) => (
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { itemCount } = useCart();
   const { count: wishlistCount } = useWishlist();
   const { isAuthenticated, user, dispatch } = useAuth();
@@ -249,11 +259,25 @@ const Navbar = () => {
           {/* Browse */}
           <p className={sectionLabelClass}>Browse</p>
           <nav className="flex flex-col gap-1">
-            {MENU_BROWSE.map((link) => (
-              <NavLink key={link.label} to={link.to} className={mobileLinkClass} onClick={closeMenu}>
-                {link.label}
-              </NavLink>
-            ))}
+            {MENU_BROWSE.map((link) => {
+              const shopActive = isShopBrowseLinkActive(link, location);
+              return (
+                <NavLink
+                  key={link.label}
+                  to={link.to}
+                  end={link.to === ROUTES.SHOP}
+                  className={({ isActive, isPending }) =>
+                    mobileLinkClass({
+                      isActive: shopActive !== undefined ? shopActive : isActive,
+                      isPending,
+                    })
+                  }
+                  onClick={closeMenu}
+                >
+                  {link.label}
+                </NavLink>
+              );
+            })}
           </nav>
 
           <div className="my-2 border-t border-gray-100" />
