@@ -19,7 +19,6 @@ const HomePage = () => {
   const [bestSellers, setBestSellers] = useState([]);
   const [loadingNew, setLoadingNew] = useState(true);
   const [loadingBest, setLoadingBest] = useState(true);
-  const [hasAnyProducts, setHasAnyProducts] = useState(true);
 
   useEffect(() => {
     catalogService
@@ -33,14 +32,10 @@ const HomePage = () => {
       .then((result) => setBestSellers(result.products))
       .catch(() => setBestSellers([]))
       .finally(() => setLoadingBest(false));
-
-    catalogService
-      .getProducts({ limit: 1 })
-      .then((result) => setHasAnyProducts((result.products?.length ?? 0) > 0))
-      .catch(() => setHasAnyProducts(false));
   }, []);
 
-  const catalogEmpty = !loadingNew && !loadingBest && !hasAnyProducts
+  // Derive "empty catalog" from the two product calls instead of a third request.
+  const catalogEmpty = !loadingNew && !loadingBest
     && newArrivals.length === 0 && bestSellers.length === 0;
 
   return (

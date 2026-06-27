@@ -9,6 +9,19 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    // Split big, rarely-changing vendor libs into their own chunks so the
+    // browser downloads them in parallel and caches them across deploys.
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          redux: ['@reduxjs/toolkit', 'react-redux'],
+          http: ['axios'],
+        },
+      },
+    },
+  },
   server: {
     port: 5173,
     proxy: {
